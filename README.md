@@ -1,2 +1,3 @@
 # basic-account-example
-Exercise in writing clean/readable code  Simple small application in Java.
+Exercise in writing clean/readable code.  
+Application in Java (IDE: Eclipse).
