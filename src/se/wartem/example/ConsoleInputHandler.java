@@ -1,6 +1,7 @@
-package se.wartem;
+package se.wartem.example;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
@@ -15,7 +16,7 @@ public class ConsoleInputHandler {
 	public ConsoleInputHandler() {
 	}
 
-	public static String readAndTrimInput() {
+	public static String readAndTrimInput() throws FileNotFoundException {
 
 		String input = "";
 
@@ -28,7 +29,12 @@ public class ConsoleInputHandler {
 		}
 
 		if ("0".equals(input)) {
-			System.exit(0);
+			try {
+				AccountHandler.systemExit();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return input;
 	}
@@ -41,7 +47,7 @@ public class ConsoleInputHandler {
 		return inputLong > 0 ? inputLong : -1;
 	}
 
-	public static long getLongFromInput(String message) {
+	public static long getLongFromInput(String message) throws FileNotFoundException {
 		while (true) {
 			System.out.println(message);
 			long longInput = getNumericInput(readAndTrimInput());
@@ -66,17 +72,17 @@ public class ConsoleInputHandler {
 		return !password.isBlank() && password.length() >= 6;
 	}
 
-	public static String askForName(String nameType) {
+	public static String askForName(String nameType) throws FileNotFoundException {
 		System.out.println("Please type your " + nameType + " name and press Enter.");
 		String name = readAndTrimInput();
 		if (!isNameValid(name)) {
-			System.out.println(name + " is invalid as " + nameType + "  name.");
+			System.out.println(name + " is invalid as " + nameType + " name.");
 			askForName(nameType);
 		}
 		return name;
 	}
 
-	public static String askForPassword() {
+	public static String askForPassword() throws FileNotFoundException {
 		System.out.println("Please type your password and press Enter.");
 		String password = readAndTrimInput();
 		if (!isPasswordValid(password)) {

@@ -1,5 +1,6 @@
-package se.wartem;
+package se.wartem.example;
 
+import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -10,7 +11,7 @@ import java.security.NoSuchAlgorithmException;
 public class Account {
 
 	private String accountName = "";
-	private int accountNumber = 0;
+	private long accountNumber = 0;
 	private String firstName = "";
 	private String lastName = "";
 	private String hashedPassword = "";
@@ -26,6 +27,49 @@ public class Account {
 		setAccountNumber(accountArrayListSize);
 		generateAccountName();
 		this.toString();
+	}
+
+	public String getHashedPassword() {
+		return hashedPassword;
+	}
+
+	public Account(String accountName, long accountNumber, String firstName, String lastName, String hashedPassword,
+			long balance) {
+		super();
+		this.accountName = accountName;
+		this.accountNumber = accountNumber;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.hashedPassword = hashedPassword;
+		this.balance = balance;
+	}
+
+	public void setHashedPassword(String hashedPassword) {
+		this.hashedPassword = hashedPassword;
+	}
+
+	public MessageDigest getMessageDigest() {
+		return messageDigest;
+	}
+
+	public void setMessageDigest(MessageDigest messageDigest) {
+		this.messageDigest = messageDigest;
+	}
+
+	public void setAccountName(String accountName) {
+		this.accountName = accountName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public void setBalance(long balance) {
+		this.balance = balance;
 	}
 
 	public String getFirstName() {
@@ -44,7 +88,7 @@ public class Account {
 		return balance;
 	}
 
-	public int getAccountNumber() {
+	public long getAccountNumber() {
 		return accountNumber;
 	}
 
@@ -52,14 +96,15 @@ public class Account {
 		accountName = firstName + accountNumber;
 	}
 
-	public void setAccountNumber(int accountNumber) {
+	public void setAccountNumber(long accountNumber) {
 		this.accountNumber = accountNumber;
 	}
 
 	private String hashString(String toBeHashed) throws NoSuchAlgorithmException {
 		messageDigest = MessageDigest.getInstance("SHA-256");
 		messageDigest.update(toBeHashed.getBytes());
-		return new String(messageDigest.digest());
+		// System.out.println(messageDigest.digest());
+		return new BigInteger(messageDigest.digest()).toString();
 	}
 
 	public void withdraw(long amount) {
