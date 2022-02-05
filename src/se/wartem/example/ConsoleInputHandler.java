@@ -1,7 +1,6 @@
 package se.wartem.example;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
@@ -13,10 +12,7 @@ import java.util.regex.Pattern;
  */
 public class ConsoleInputHandler {
 
-	public ConsoleInputHandler() {
-	}
-
-	public static String readAndTrimInput() throws FileNotFoundException {
+	public static String readAndTrimInput() {
 
 		String input = "";
 
@@ -26,15 +22,6 @@ public class ConsoleInputHandler {
 			input = bufferedReader.readLine();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-
-		if ("0".equals(input)) {
-			try {
-				AccountHandler.systemExit();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 		return input;
 	}
@@ -47,7 +34,7 @@ public class ConsoleInputHandler {
 		return inputLong > 0 ? inputLong : -1;
 	}
 
-	public static long getLongFromInput(String message) throws FileNotFoundException {
+	public static long getLongFromInput(String message) {
 		while (true) {
 			System.out.println(message);
 			long longInput = getNumericInput(readAndTrimInput());
@@ -59,20 +46,18 @@ public class ConsoleInputHandler {
 	}
 
 	public static boolean isNameValid(String name) {
-		Pattern pattern = Pattern.compile("^[A-Za-z_.]+$", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(name);
-		boolean matchedAtoZ = matcher.matches();
-		return matchedAtoZ && !name.isBlank() && name.length() >= 2;
+		Pattern pattern = Pattern.compile("^[A-Za-z0-9-]*$", Pattern.CASE_INSENSITIVE);
+		Matcher matchedAtoZDigit = pattern.matcher(name);
+		return matchedAtoZDigit.matches() && !name.isBlank() && name.length() >= 2;
 	}
 
 	public static boolean isPasswordValid(String password) {
-		Pattern pattern = Pattern.compile("[^A-Za-z0-9_.]", Pattern.CASE_INSENSITIVE);
-		Matcher matcher = pattern.matcher(password);
-		boolean matchedAtoZDigit = matcher.matches();
-		return !password.isBlank() && password.length() >= 6;
+		Pattern pattern = Pattern.compile("^[A-Za-z0-9_-]*$", Pattern.CASE_INSENSITIVE);
+		Matcher matchedAtoZDigit = pattern.matcher(password);
+		return matchedAtoZDigit.matches() && !password.isBlank() && password.length() >= 6;
 	}
 
-	public static String askForName(String nameType) throws FileNotFoundException {
+	public static String askForName(String nameType) {
 		System.out.println("Please type your " + nameType + " name and press Enter.");
 		String name = readAndTrimInput();
 		if (!isNameValid(name)) {
@@ -82,7 +67,7 @@ public class ConsoleInputHandler {
 		return name;
 	}
 
-	public static String askForPassword() throws FileNotFoundException {
+	public static String askForPassword() {
 		System.out.println("Please type your password and press Enter.");
 		String password = readAndTrimInput();
 		if (!isPasswordValid(password)) {

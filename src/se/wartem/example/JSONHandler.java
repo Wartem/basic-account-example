@@ -17,9 +17,9 @@ public final class JSONHandler {
 
 	final public static String jsonFileName = "accounts.json";
 
-	public static ArrayList<Account> readAccountsFromFile() throws FileNotFoundException, IOException, ParseException {
+	public static ArrayList<Account> readAccountsFromFile() throws IOException, ParseException {
 
-		ArrayList<Account> accountList = new ArrayList<Account>();
+		ArrayList<Account> accountList = new ArrayList<>();
 		if (new File(jsonFileName).exists()) {
 			JSONParser parser = new JSONParser();
 
@@ -27,10 +27,10 @@ public final class JSONHandler {
 			JSONObject jsonObject = (JSONObject) obj;
 
 			JSONArray accountContent = (JSONArray) jsonObject.get("Accounts");
-			Iterator iterator = accountContent.iterator();
+			Iterator<JSONObject> iterator = accountContent.iterator();
 
 			while (iterator.hasNext()) {
-				JSONObject content = (JSONObject) iterator.next();
+				JSONObject content = iterator.next();
 
 				Account account = new Account((String) content.get("accountName"), (Long) content.get("accountNumber"),
 						(String) content.get("firstName"), (String) content.get("lastName"),

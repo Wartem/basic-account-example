@@ -11,8 +11,8 @@ import org.json.simple.parser.ParseException;
 public class Main {
 
 	public static void main(String[] args) throws NoSuchAlgorithmException, InterruptedException, IOException, ParseException {
+		System.out.println();
 		AccountHandler accountHandler = new AccountHandler();
 		accountHandler.run();
 	}
-
 }

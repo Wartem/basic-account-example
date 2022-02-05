@@ -1,6 +1,5 @@
 package se.wartem.example;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -12,12 +11,11 @@ import org.json.simple.parser.ParseException;
  */
 public class AccountHandler {
 
-	private static ArrayList<Account> accountArrayList;
-	private ConsoleInputHandler input;
+	private ArrayList<Account> accountArrayList;
+	boolean run = true;
 
-	public AccountHandler() throws FileNotFoundException, IOException, ParseException {
-		input = new ConsoleInputHandler();
-		this.accountArrayList = new ArrayList<Account>();
+	public AccountHandler() throws IOException, ParseException {
+		this.accountArrayList = new ArrayList<>();
 		loadStoredAccounts();
 	}
 
@@ -30,26 +28,26 @@ public class AccountHandler {
 				List accounts: Type 3 and press Enter.
 
 				Exit Program: Type 0 and press Enter.""");
-		String inputString = this.input.readAndTrimInput();
+		String inputString = ConsoleInputHandler.readAndTrimInput();
+
+		if ("0".equals(inputString)) {
+			try {
+				systemExit();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
 		switch (inputString) {
-		case "0":
-			systemExit();
-		case "1":
-			createAccount();
-			break;
-		case "2":
-			loginToAccount();
-			break;
-		case "3":
-			listAccounts();
-			break;
-		default:
-			System.out.println("Incorrect input");
+			case "0" -> systemExit();
+			case "1" -> createAccount();
+			case "2" -> loginToAccount();
+			case "3" -> listAccounts();
+			default -> System.out.println("Incorrect input");
 		}
 	}
 
-	private void loadStoredAccounts() throws FileNotFoundException, IOException, ParseException {
+	private void loadStoredAccounts() throws IOException, ParseException {
 		accountArrayList = JSONHandler.readAccountsFromFile();
 	}
 
@@ -61,12 +59,14 @@ public class AccountHandler {
 		System.out.println();
 	}
 
-	private void createAccount() throws NoSuchAlgorithmException, FileNotFoundException {
+	private void createAccount() throws NoSuchAlgorithmException {
 
-		Account account = new Account(input.askForName("First"), input.askForName("Last"), input.askForPassword(),
+		Account account = new Account(ConsoleInputHandler.askForName("First"),
+				ConsoleInputHandler.askForName("Last"),
+				ConsoleInputHandler.askForPassword(),
 				accountArrayList.size() + 1);
 		accountArrayList.add(account);
-		System.out.println("Account created: " + account.getAccountName() + ". " + account.toString());
+		System.out.println("Account created: " + account.getAccountName() + ". " + account);
 	}
 
 	private Account findAccount(String accountName) throws NoSuchAlgorithmException {
@@ -80,13 +80,13 @@ public class AccountHandler {
 
 	private boolean loginToAccount() throws NoSuchAlgorithmException, IOException {
 		System.out.println("Please type your account name and press Enter.");
-		Account account = findAccount(input.readAndTrimInput());
+		Account account = findAccount(ConsoleInputHandler.readAndTrimInput());
 		if (account.getAccountNumber() < 1) {
 			System.out.println("The account name does not exist.");
 			return false;
 		}
 
-		if (account.login(input.askForPassword())) {
+		if (account.login(ConsoleInputHandler.askForPassword())) {
 			loggedIn(account);
 			return true;
 		}
@@ -98,7 +98,7 @@ public class AccountHandler {
 		boolean loggedIn = true;
 		while (loggedIn) {
 			System.out.println("\nWelcome " + account.getFirstName() + " " + account.getLastName());
-			System.out.println(account.toString() + "\n");
+			System.out.println(account + "\n");
 			System.out.println("""
 					Deposit: Type 1 and press Enter.
 					Withdraw: Type 2 and press Enter.
@@ -106,43 +106,34 @@ public class AccountHandler {
 					Logout: Type 3 and press Enter.
 					Exit program: Type 0 and press Enter.""");
 
-			String inputString = this.input.readAndTrimInput();
+			String inputString = ConsoleInputHandler.readAndTrimInput();
 
 			switch (inputString) {
-			case "0":
-				systemExit();
-				break;
-			case "1":
-				runDeposit(account);
-				break;
-			case "2":
-				runWithdraw(account);
-				break;
-			case "3":
-				loggedIn = false;
-				break;
-			default:
-				System.out.println("Incorrect input.");
+				case "0" -> systemExit();
+				case "1" -> runDeposit(account);
+				case "2" -> runWithdraw(account);
+				case "3" -> loggedIn = false;
+				default -> System.out.println("Incorrect input.");
 			}
 		}
 	}
 
-	private void runDeposit(Account account) throws FileNotFoundException {
-		account.deposit(input.getLongFromInput("Deposit: Type the amount you want to deposit and press Enter."));
+	private void runDeposit(Account account) {
+		account.deposit(ConsoleInputHandler.getLongFromInput("Deposit: Type the amount you want to deposit and press Enter."));
 	}
 
-	private void runWithdraw(Account account) throws FileNotFoundException {
-		account.withdraw(input.getLongFromInput("Deposit: Type the amount you want to withdraw and press Enter."));
+	private void runWithdraw(Account account) {
+		account.withdraw(ConsoleInputHandler.getLongFromInput("Deposit: Type the amount you want to withdraw and press Enter."));
 	}
 
-	public static void systemExit() throws IOException {
+	public void systemExit() throws IOException {
 		JSONHandler.writeAccountsToFile(accountArrayList);
 		System.out.println("System exits.");
 		System.exit(0);
 	}
 
 	public void run() throws NoSuchAlgorithmException, InterruptedException, IOException {
-		while (true) {
+		while (run) {
 			Thread.sleep(100);
 			mainMenu();
 		}

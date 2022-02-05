@@ -26,7 +26,6 @@ public class Account {
 		this.hashedPassword = hashString(password);
 		setAccountNumber(accountArrayListSize);
 		generateAccountName();
-		this.toString();
 	}
 
 	public String getHashedPassword() {
